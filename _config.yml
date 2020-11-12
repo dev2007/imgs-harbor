@@ -1,0 +1,21 @@
+title: Awu's image host
+author: 阿呜
+email: softengineerwu@gmail.com
+description: >-
+  免费图床,免费建站
+social:
+  twitter: 
+  facebook: 
+  instagram: 
+  github: 
+  linkedin:
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+collections:
+  images:
+    output: true
