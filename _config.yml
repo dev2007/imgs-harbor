@@ -1,13 +1,14 @@
-title: Awu's image host
+title: 免费图床-图片外链-image host-image upload
 author: 阿呜
 email: softengineerwu@gmail.com
 description: >-
-  免费图床,免费建站
+  图片上传, 外链, https，高清原图, 永久免费, 全球CDN加速
+explain: 本站使用GitHub存储图片，不保留任何图片。图片一经上传，即可被公开查看。请自行确保图片不违反国家法律法规和GitHub相关规定。
 social:
   twitter: 
   facebook: 
   instagram: 
-  github: 
+  github: dev2007
   linkedin:
 
 # Build settings
