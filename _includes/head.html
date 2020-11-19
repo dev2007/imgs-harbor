@@ -111,6 +111,13 @@
             right: 5px;
         }
 
+        .uplist {
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+            right: 5px;
+        }
+
         .upload-item-name {
             display: block;
             margin-right: 40px;
@@ -182,10 +189,6 @@
                         document.getElementById('file-list').appendChild(li); //插入文件列表
 
 
-                        /**
-                         *
-                         * 点击删除按钮，这个应该到时候也不要
-                         */
                         let deleArr = document.getElementsByClassName('delete');
                         for (let i = 0; i < deleArr.length; i++) {
                             deleArr[i].onclick = function (event) {
@@ -242,14 +245,14 @@
                 let submitArr = [];
                 for (let i = 0; i < dataArr.length; i++) {
                     if (dataArr[i]) {
-                        uploadFile(dataArr[i]);
+                        uploadFile(dataArr[i],i);
                     }
                 }
 
 
             }
 
-            function uploadFile(fileData) {
+            function uploadFile(fileData,i) {
                 /**
                  * 以下是原生的xml 上传方式
                  * */
@@ -261,17 +264,23 @@
                 xml.open('put', api, true); // true表示异步执行，不等待后台返回；
                 xml.setRequestHeader("Accept", "application/vnd.github.v3+json");
                 let token = window.atob("MmU4MDVmNTY4MmEzZmY1MGIzYWZhNmVkMjQ4YTc4NmI4YjgzNmFlMg==");
-                xml.setRequestHeader("Authorization", "token "+token);
+                xml.setRequestHeader("Authorization", "token " + token);
                 //发送数据
-                let data = {"message": "upload file","content":  fileData.base64 };
+                let data = { "message": "upload file", "content": fileData.base64 };
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
                         if (xml.status == 201) {  //监听HTTP状态码
                             // 回填图片路径地址
                             let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
-                            let fileContent = `<span id="fileUrl">${fileUrl}</span>
-                <label style="display: inline-block; margin-left: 20px;cursor: pointer" onclick="copyUrl();">复制</label>`;
+                            let fileContent = `<li><a id="fileUrl${i}">${fileUrl}</a>
+                <label class="uplist">复制</label></li>`;
                             document.getElementById('resultUrl').innerHTML = fileContent;
+                            let upArr = document.getElementsByClassName('uplist');
+                        for (let i = 0; i < upArr.length; i++) {
+                            upArr[i].onclick = function (event) {
+                                copyUrl(i);
+                            }
+                        }
                         } else {
                             console.log(xml.status);
                         }
@@ -295,9 +304,18 @@
                 el.classList.add('active');
             }
         };
-        function copyUrl() {
-            let url = document.getElementById('fileUrl').innerHTML;
-            alert(url);
+        function copyUrl(i) {
+            let url = document.getElementById('fileUrl'+i).innerHTML;
+            const input = document.createElement('input');
+            input.setAttribute('readonly', 'readonly');
+            input.setAttribute('value', url);
+            document.body.appendChild(input);
+            input.setSelectionRange(0, 9999);
+            if (document.execCommand('copy')) {
+                document.execCommand('copy');
+                console.log('复制成功');
+            }
+            document.body.removeChild(input);
 
         };
     </script>
