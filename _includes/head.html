@@ -169,15 +169,6 @@
                             base64: window.btoa(this.result)   //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里    
                         }
                         dataArr.push(imgMsg);   //将图片信息对象存到数据数组中
-                        /**
-                         * 下面是上传图片后的展示形式（到时候可以不用）
-                         * */
-                        // result = '<div class="deletess">delete</div><div class="result"><img src="' + this.result + '" alt=""/></div>';
-                        // let div = document.createElement('div');
-                        // div.innerHTML = result;
-                        // div['className'] = 'float';
-                        // div['index'] = index;
-                        // document.getElementsByTagName('body')[0].appendChild(div);  　　//插入dom树
 
                         /**
                          * 将文件列表存放在按钮下方
@@ -190,16 +181,6 @@
                         li['index'] = index;
                         document.getElementById('file-list').appendChild(li); //插入文件列表
 
-                        /**
-                         *
-                         * 点击删除按钮，这个应该到时候也不要
-                         */
-                        div.onclick = function () {
-                            this.remove();                  // 在页面中删除该图片元素
-                            //                            delete dataArr[this.index];  // 删除dataArr对应的数据
-                            dataArr.splice(this.index, 1); // 删除dataArr对应的数据
-                            updateList();
-                        }
 
                         /**
                          *
@@ -285,7 +266,7 @@
                 let data = {"message": "upload file","content":  fileData.base64 };
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
-                        if (xml.status == 200 || xml.status == 0) {  //监听HTTP状态码
+                        if (xml.status == 201) {  //监听HTTP状态码
                             var info = xhr.responseText;
                             console.log(info);  //显示JSON对象字符串
                             // 回填图片路径地址
