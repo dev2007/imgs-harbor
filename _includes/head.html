@@ -279,7 +279,7 @@
                 let api = "https://api.github.com/repos/dev2007/imgs-harbor/contents/" + path;
                 xml.open('put', api, true); // true表示异步执行，不等待后台返回；
                 xml.setRequestHeader("Accept", "application/vnd.github.v3+json");
-                let token = window.btoa("MmU4MDVmNTY4MmEzZmY1MGIzYWZhNmVkMjQ4YTc4NmI4YjgzNmFlMg==");
+                let token = window.atob("MmU4MDVmNTY4MmEzZmY1MGIzYWZhNmVkMjQ4YTc4NmI4YjgzNmFlMg==");
                 xml.setRequestHeader("Authorization", "token "+token);
                 //发送数据
                 let data = {"message": "upload file","content":  fileData.base64 };
