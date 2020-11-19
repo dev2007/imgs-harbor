@@ -172,12 +172,12 @@
                         /**
                          * 下面是上传图片后的展示形式（到时候可以不用）
                          * */
-                        result = '<div class="deletess">delete</div><div class="result"><img src="' + this.result + '" alt=""/></div>';
-                        let div = document.createElement('div');
-                        div.innerHTML = result;
-                        div['className'] = 'float';
-                        div['index'] = index;
-                        //document.getElementsByTagName('body')[0].appendChild(div);  　　//插入dom树
+                        // result = '<div class="deletess">delete</div><div class="result"><img src="' + this.result + '" alt=""/></div>';
+                        // let div = document.createElement('div');
+                        // div.innerHTML = result;
+                        // div['className'] = 'float';
+                        // div['index'] = index;
+                        // document.getElementsByTagName('body')[0].appendChild(div);  　　//插入dom树
 
                         /**
                          * 将文件列表存放在按钮下方
@@ -281,10 +281,10 @@
                 xml.setRequestHeader("Accept", "application/vnd.github.v3+json");
                 xml.setRequestHeader("Authorization", "token 1e77f49d7aaab3715e1e42166ac5cbb27effa8db");
                 //发送数据
-                let data = '{"message": "upload file","content": "' + fileData.base64 + '"}';
+                let data = {"message": "upload file","content": "' + fileData.base64 + '"};
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
-                        if (xml.state == 200 || xml.status == 0) {  //监听HTTP状态码
+                        if (xml.status == 200 || xml.status == 0) {  //监听HTTP状态码
                             var info = xhr.responseText;
                             console.log(info);  //显示JSON对象字符串
                             // 回填图片路径地址
@@ -293,7 +293,7 @@
                 <label style="display: inline-block; margin-left: 20px;cursor: pointer" onclick="copyUrl();">复制</label>`;
                             document.getElementById('resultUrl').innerHTML = fileContent;
                         } else {
-                            console.log(xml.state);
+                            console.log(xml.status);
                         }
                     }
                 }
