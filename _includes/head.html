@@ -267,8 +267,6 @@
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
                         if (xml.status == 201) {  //监听HTTP状态码
-                            var info = xhr.responseText;
-                            console.log(info);  //显示JSON对象字符串
                             // 回填图片路径地址
                             let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
                             let fileContent = `<span id="fileUrl">${fileUrl}</span>
