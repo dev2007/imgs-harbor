@@ -154,6 +154,14 @@
             }
 
             function readFile() {
+                let copyList = document.getElementsByClassName("upload-list-item");
+                if (copyList) {
+                    for (i = 0; i < copyList.length; i++) {
+                        if (copyList[i] != null){
+                            copyList[i].parentNode.removeChild(copyList[i]);
+                        }
+                    }
+                }
                 fd = new FormData(); //FormData方式发送请求
                 let iLen = this.files.length;  //获取图片数量
                 /**
@@ -245,14 +253,14 @@
                 let submitArr = [];
                 for (let i = 0; i < dataArr.length; i++) {
                     if (dataArr[i]) {
-                        uploadFile(dataArr[i],i);
+                        uploadFile(dataArr[i], i);
                     }
                 }
 
 
             }
 
-            function uploadFile(fileData,i) {
+            function uploadFile(fileData, i) {
                 /**
                  * 以下是原生的xml 上传方式
                  * */
@@ -270,17 +278,18 @@
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
                         if (xml.status == 201) {  //监听HTTP状态码
+                            dataArr.splice(i, 1); // 删除dataArr对应的数据
+                            updateList();
                             // 回填图片路径地址
                             let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
-                            let fileContent = `<li><a id="fileUrl${i}">${fileUrl}</a>
-                <label class="uplist">复制</label></li>`;
+                            let fileContent = `<li class="upload-list-item"><a id="fileUrl${i}">${fileUrl}</a>
+                <label class="uplist" id="copy${i}">复制</label></li>`;
                             document.getElementById('resultUrl').innerHTML = fileContent;
                             let upArr = document.getElementsByClassName('uplist');
-                        for (let i = 0; i < upArr.length; i++) {
-                            upArr[i].onclick = function (event) {
+                            let up = document.getElementById("copy" + i);
+                            up.onclick = function (event) {
                                 copyUrl(i);
                             }
-                        }
                         } else {
                             console.log(xml.status);
                         }
@@ -305,15 +314,17 @@
             }
         };
         function copyUrl(i) {
-            let url = document.getElementById('fileUrl'+i).innerHTML;
+            let url = document.getElementById('fileUrl' + i).innerHTML;
             const input = document.createElement('input');
+            input.setAttribute('id', 'copyInput')
             input.setAttribute('readonly', 'readonly');
             input.setAttribute('value', url);
             document.body.appendChild(input);
             input.setSelectionRange(0, 9999);
+            document.getElementById("copyInput").select();
             if (document.execCommand('copy')) {
                 document.execCommand('copy');
-                console.log('复制成功');
+                alert('复制成功');
             }
             document.body.removeChild(input);
 
