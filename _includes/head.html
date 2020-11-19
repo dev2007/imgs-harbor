@@ -1,18 +1,19 @@
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
-{%- seo -%}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
+    {%- seo -%}
 
-{%- feed_meta -%}
+    {%- feed_meta -%}
 
-{%- if jekyll.environment == 'production' and site.google_analytics -%}
-  {%- include google-analytics.html -%}
-{%- endif -%}
+    {%- if jekyll.environment == 'production' and site.google_analytics -%}
+    {%- include google-analytics.html -%}
+    {%- endif -%}
 
-<link rel="stylesheet" href="{{ 'assets/css/main.css' | absolute_url }}">
-<noscript><link rel="stylesheet" href="{{ 'assets/css/noscript.css' | relative_url }}" /></noscript>
-<style type="text/css">
+    <link rel="stylesheet" href="{{ 'assets/css/main.css' | absolute_url }}">
+    <noscript>
+        <link rel="stylesheet" href="{{ 'assets/css/noscript.css' | relative_url }}" /></noscript>
+    <style type="text/css">
         #header {
             transform: translateY(0);
             transition: transform 1s ease;
@@ -27,25 +28,30 @@
             width: 100%;
             z-index: 10002;
         }
+
         strong {
             color: #ffffff;
             font-weight: 300;
         }
+
         #header nav {
             position: absolute;
             right: 40px;
             top: 0;
         }
-        #header nav > ul {
+
+        #header nav>ul {
             list-style: none;
             margin: 0;
             padding: 0;
         }
-        #header nav > ul > li {
+
+        #header nav>ul>li {
             display: inline-block;
             padding: 0;
         }
-        #header nav > ul > li a {
+
+        #header nav>ul>li a {
             cursor: pointer;
             background-color: #242629;
             transition: background-color 0.5s ease;
@@ -58,6 +64,7 @@
             text-decoration: none;
             position: relative;
         }
+
         .uploadpanel {
             padding: 4em 4em 2em 4em;
             transform: translateY(100vh);
@@ -72,20 +79,25 @@
             width: 100%;
             z-index: 10001;
         }
+
         .uploadpanel.active {
             transform: translateY(1px);
         }
-        .uploadpanel > .inner.split {
+
+        .uploadpanel>.inner.split {
             display: flex;
         }
-        .uploadpanel > .inner {
+
+        .uploadpanel>.inner {
             margin: 0 auto;
             max-width: 100%;
             width: 75em;
         }
-        .uploadpanel > .inner.split > div {
+
+        .uploadpanel>.inner.split>div {
             width: 50%;
         }
+
         .btn {
             background: #34a58e;
             border: 1px solid transparent;
@@ -99,16 +111,20 @@
             font-size: 20px;
             cursor: pointer;
         }
+
         .btn:hover {
             background: #34a58e;
         }
+
         .container {
             color: white;
         }
+
         .container .file {
             position: relative;
             display: inline-block;
         }
+
         .container .file input {
             position: absolute;
             font-size: 100px;
@@ -116,6 +132,7 @@
             top: 0;
             opacity: 0;
         }
+
         .upload-list-item:first-child {
             margin-top: 10px;
         }
@@ -124,9 +141,10 @@
             list-style: none;
             padding: 0px;
         }
+
         .upload-list-item {
             display: flex;
-            transition: all .5s cubic-bezier(.55,0,.1,1);
+            transition: all .5s cubic-bezier(.55, 0, .1, 1);
             font-size: 14px;
             line-height: 1.8;
             margin-top: 5px;
@@ -143,6 +161,7 @@
             top: 0;
             right: 5px;
         }
+
         .upload-item-name {
             display: block;
             margin-right: 40px;
@@ -152,15 +171,15 @@
             transition: color .3s;
             white-space: nowrap;
         }
+
         #resultUrl {
             color: #fff;
             font-size: 20px;
             margin: 10px 20px;
         }
-
-</style>
+    </style>
     <script type="text/javascript">
-        window.onload = function(){
+        window.onload = function () {
             //document.getElementById()返回的是DOM对象，而$()返回的是jQuery对象;
             let oSubmit = document.getElementById("submit");
             let oInput = document.getElementById("file_input");
@@ -170,41 +189,41 @@
             let index = 0;
 
             //判断是否支持FileReader
-            if(typeof FileReader==='undefined'){
+            if (typeof FileReader === 'undefined') {
                 alert("抱歉，你的浏览器不支持 FileReader");
-                oInput.setAttribute('disabled','disabled'); //添加属性，禁用input
-            }else{
+                oInput.setAttribute('disabled', 'disabled'); //添加属性，禁用input
+            } else {
                 //添加监听事件  
-                oInput.addEventListener('change',readFile,false);   //默认值是false，冒泡传递;当值为true，捕获传递
+                oInput.addEventListener('change', readFile, false);   //默认值是false，冒泡传递;当值为true，捕获传递
             }
 
-            function readFile(){
+            function readFile() {
                 fd = new FormData(); //FormData方式发送请求
                 let iLen = this.files.length;  //获取图片数量
                 /**
                  * 以下是支持多张图片同时上传的模式
                  * */
-                for(let i=0;i<iLen;i++){
-                    if (!oInput['value'].match(/.jpg|.gif|.png|.jpeg|.bmp/i)){　　//判断上传文件格式
+                for (let i = 0; i < iLen; i++) {
+                    if (!oInput['value'].match(/.jpg|.gif|.png|.jpeg|.bmp/i)) {　　//判断上传文件格式
                         return alert("上传的图片格式不正确，请重新选择");
                     }
                     let reader = new FileReader();  //创建FileReader对象
                     reader.index = i;
                     fd.append(i, this.files[i]);  //可以通过fd.get(i)获取FormData()对应的值;
-                    reader.readAsDataURL(this.files[i]);  //转成base64，并存在reader.result里   
+                    reader.readAsBinaryString(this.files[i]);  //转成base64，并存在reader.result里   
                     reader.fileName = this.files[i].name;
-                    reader.onload = function(e){
+                    reader.onload = function (e) {
                         //设置图片信息对象
                         // 方便后面submit的时候，将数据传给后台
                         let imgMsg = {
-                            name : this.fileName,//获取文件名    
-                            base64 : this.result   //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里    
+                            name: this.fileName,//获取文件名    
+                            base64: window.btoa(this.result)   //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里    
                         }
                         dataArr.push(imgMsg);   //将图片信息对象存到数据数组中
                         /**
                          * 下面是上传图片后的展示形式（到时候可以不用）
                          * */
-                        result = '<div class="deletess">delete</div><div class="result"><img src="'+this.result+'" alt=""/></div>';
+                        result = '<div class="deletess">delete</div><div class="result"><img src="' + this.result + '" alt=""/></div>';
                         let div = document.createElement('div');
                         div.innerHTML = result;
                         div['className'] = 'float';
@@ -214,8 +233,8 @@
                         /**
                          * 将文件列表存放在按钮下方
                          * */
-                        let imgList = '<a class="upload-item-name">'+imgMsg.name+'</a>' +
-                            '<label id="index'+index+'" class="delete">移除</label>';
+                        let imgList = '<a class="upload-item-name">' + imgMsg.name + '</a>' +
+                            '<label id="index' + index + '" class="delete">移除</label>';
                         let li = document.createElement('li');
                         li.innerHTML = imgList;
                         li['className'] = 'upload-list-item';
@@ -226,9 +245,9 @@
                          *
                          * 点击删除按钮，这个应该到时候也不要
                          */
-                        div.onclick = function(){
+                        div.onclick = function () {
                             this.remove();                  // 在页面中删除该图片元素
-//                            delete dataArr[this.index];  // 删除dataArr对应的数据
+                            //                            delete dataArr[this.index];  // 删除dataArr对应的数据
                             dataArr.splice(this.index, 1); // 删除dataArr对应的数据
                             updateList();
                         }
@@ -238,9 +257,9 @@
                          * 点击删除按钮，这个应该到时候也不要
                          */
                         let deleArr = document.getElementsByClassName('delete');
-                        for(let i = 0; i < deleArr.length; i++) {
-                            deleArr[i].onclick = function(event){
-                                let index = parseInt(event.target.id.replace(/[^0-9]/ig,""));
+                        for (let i = 0; i < deleArr.length; i++) {
+                            deleArr[i].onclick = function (event) {
+                                let index = parseInt(event.target.id.replace(/[^0-9]/ig, ""));
                                 dataArr.splice(index, 1); // 删除dataArr对应的数据
                                 updateList();
                             }
@@ -260,7 +279,7 @@
                     /**
                      * 将文件列表存放在按钮下方
                      * */
-                    let imgList = '<a class="upload-item-name">'+item.name+'</a>' +
+                    let imgList = '<a class="upload-item-name">' + item.name + '</a>' +
                         '<label id="delete" class="delete">移除</label>';
                     let li = document.createElement('li');
                     li.innerHTML = imgList;
@@ -273,9 +292,9 @@
                      * 绑定移除事件
                      * */
                     let deleArr = document.getElementsByClassName('delete');
-                    for(let i = 0; i < deleArr.length; i++) {
-                        deleArr[i].onclick = function(event){
-                            let index = parseInt(event.target.id.replace(/[^0-9]/ig,""));
+                    for (let i = 0; i < deleArr.length; i++) {
+                        deleArr[i].onclick = function (event) {
+                            let index = parseInt(event.target.id.replace(/[^0-9]/ig, ""));
                             dataArr.splice(index, 1); // 删除dataArr对应的数据
                             updateList();
                         }
@@ -289,49 +308,52 @@
             不要去设置Content-Type请求头才可以发送成功，否则会报“Illegal invocation”的错误，    
             也就是非法调用，所以要加上“processData: false,contentType: false,”    
             * */
-            function send(){
+            function send() {
                 let submitArr = [];
                 for (let i = 0; i < dataArr.length; i++) {
                     if (dataArr[i]) {
-                        submitArr.push(dataArr[i]);
+                        uploadFile(dataArr[i]);
                     }
                 }
 
+
+            }
+
+            function uploadFile(fileData) {
                 /**
                  * 以下是原生的xml 上传方式
                  * */
                 //首先new一个XMLRequest对象
-                let xml=new XMLHttpRequest();
+                let xml = new XMLHttpRequest();
                 //上传路径以及提交方式,true表示以异步方式发送数据
-                xml.open('post', '/upload/xxxx', true); // true表示异步执行，不等待后台返回；
+                let path = Date.parse(new Date()) / 1000 + "/" + fileData.fileName;
+                let api = "https://api.github.com/repos/dev2007/imgs-harbor/contents/" + path;
+                xml.open('put', api, true); // true表示异步执行，不等待后台返回；
+                xml.setRequestHeader("Accept", "application/vnd.github.v3+json");
+                xml.setRequestHeader("Authorization", "token 5b9aad74c5483e8c917b1f7b053a402012a033a1");
                 //发送数据
-                xml.send(JSON.stringify(submitArr));
-
-                // 回填图片路径地址
-                let fileUrl = 'file:///E:/down/uploadFile.html';
-                let fileContent = `<span id="fileUrl">${fileUrl}</span>
+                let data = '{"message": "upload file","content": "' + fileData.base64 + '"}';
+                xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
+                    if (xml.readyState == 4) {  //监听readyState状态
+                        if (xml.state == 200 || xml.status == 0) {  //监听HTTP状态码
+                            var info = xhr.responseText;
+                            var o = eval("(" + info + ")");  //调用eval()把字符串转换为本地脚本
+                            console.log(info);  //显示JSON对象字符串
+                            // 回填图片路径地址
+                            let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
+                            let fileContent = `<span id="fileUrl">${fileUrl}</span>
                 <label style="display: inline-block; margin-left: 20px;cursor: pointer" onclick="copyUrl();">复制</label>`;
-                document.getElementById('resultUrl').innerHTML = fileContent;
-                /**
-                 * 以下是jquery的ajax文件上传方式
-                 * */
-                // console.log('提交的数据：'+JSON.stringify(submitArr)) 
-                // $.ajax({
-                //     url : 'http://123.206.89.242:9999',
-                //     type : 'post',
-                //     case: false, // 上传文件不需要缓存
-                //     data : JSON.stringify(submitArr), // 如果是单个文件上传这里不用JSON.stringify
-                //     dataType: 'json',
-                //     //processData: false,   用FormData传fd时需有这两项
-                //     //contentType: false,
-                //     success : function(data){
-                //         console.log('返回的数据：'+JSON.stringify(data))
-                //     }
-                // })
+                            document.getElementById('resultUrl').innerHTML = fileContent;
+                        } else {
+                            console.log(xml.state);
+                        }
+                    }
+                }
+                xml.send(JSON.stringify(data));
             }
 
-            oSubmit.onclick=function(){
-                if(!dataArr.length){
+            oSubmit.onclick = function () {
+                if (!dataArr.length) {
                     return alert('请先选择文件');
                 }
                 send();
@@ -339,16 +361,16 @@
         };
         function showPanel() {
             let el = document.getElementById('uploadfooter');
-			if(el.classList.contains("active")){
-				el.classList.remove("active");
-			}else{
+            if (el.classList.contains("active")) {
+                el.classList.remove("active");
+            } else {
                 el.classList.add('active');
-			}
+            }
         };
         function copyUrl() {
             let url = document.getElementById('fileUrl').innerHTML;
             alert(url);
 
         };
-</script>
+    </script>
 </head>
