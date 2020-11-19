@@ -281,7 +281,7 @@
                 xml.setRequestHeader("Accept", "application/vnd.github.v3+json");
                 xml.setRequestHeader("Authorization", "token 1e77f49d7aaab3715e1e42166ac5cbb27effa8db");
                 //发送数据
-                let data = {"message": "upload file","content": "' + fileData.base64 + '"};
+                let data = {"message": "upload file","content":  fileData.base64 };
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
                         if (xml.status == 200 || xml.status == 0) {  //监听HTTP状态码
