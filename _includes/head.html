@@ -254,7 +254,7 @@
             function send() {
                 oInput.setAttribute('disabled', 'disabled');
                 oSubmit.setAttribute('disabled', 'disabled');
-
+                document.getElementById('resultUrl').innerHTML = "<label>上传中……</label>"
                 let submitArr = [];
                 for (let i = 0; i < dataArr.length; i++) {
                     if (dataArr[i]) {
@@ -288,6 +288,9 @@
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
                         if (xml.status == 201) {  //监听HTTP状态码
+                            if (upCount == 0) {
+                                document.getElementById('resultUrl').innerHTML = "";
+                            }
                             dataArr.splice(i, 1);
                             // 回填图片路径地址
                             let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
