@@ -282,8 +282,8 @@
                             updateList();
                             // 回填图片路径地址
                             let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
-                            let fileContent = `<li class="upload-list-item"><a id="fileUrl${i}">${fileUrl}</a>
-                <label class="uplist" id="copy${i}">复制</label></li>`;
+                            let fileContent = `<li class="upload-list-item"><a id="fileUrl${i}" href="${fileUrl}" target="_blank">${fileData.name}外链</a>
+                <label class="uplist" id="copy${i}">点击复制</label><div id="toolBox${i}" class="display:none"></div></li>`;
                             document.getElementById('resultUrl').innerHTML = fileContent;
                             let upArr = document.getElementsByClassName('uplist');
                             let up = document.getElementById("copy" + i);
@@ -315,18 +315,29 @@
         };
         function copyUrl(i) {
             let url = document.getElementById('fileUrl' + i).innerHTML;
-            const input = document.createElement('input');
-            input.setAttribute('id', 'copyInput')
-            input.setAttribute('readonly', 'readonly');
-            input.setAttribute('value', url);
-            document.body.appendChild(input);
-            input.setSelectionRange(0, 9999);
-            document.getElementById("copyInput").select();
-            if (document.execCommand('copy')) {
-                document.execCommand('copy');
-                alert('复制成功');
+            
+            let textarea = document.createElement("textarea");
+            let currentFocus = document.activeElement;
+            let toolBoxwrap = document.getElementById("toolBox"+i);
+            toolBoxwrap.appendChild(textarea);
+            textarea.value = url;
+            textarea.focus();
+            if(textarea.setSelectionRange){
+                textarea.setSelectionRange(0,textarea.value.length);
+            }else{
+                textarea.select();
             }
-            document.body.removeChild(input);
+            try{
+                var flag = document.execCommand("copy");
+            }catch(ex){
+                var flag = false;
+            }
+
+            toolBoxwrap.removeChild(textarea);
+            currentFocus.focus();
+            if(flag){
+                alert("复制成功。\n如外链未生效，请稍候两分钟，CDN缓存生成即可。");
+            }
 
         };
     </script>
