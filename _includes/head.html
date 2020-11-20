@@ -278,7 +278,7 @@
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
                         if (xml.status == 201) {  //监听HTTP状态码
-                            let upList = document.getElementById('file-list').childNodes();
+                            let upList = document.getElementById('file-list').childNodes;
                             for(let index = 0; index < upList.length;index++){
                                 if(upList[index].getAttribute("index") == i){
                                     document.getElementById('file-list').removeChild(upList[index]);
