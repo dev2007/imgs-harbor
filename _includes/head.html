@@ -154,10 +154,11 @@
             }
 
             function readFile() {
+                document.getElementById('file-list').innerHTML = '';
                 let copyList = document.getElementsByClassName("upload-list-item");
                 if (copyList) {
                     for (i = 0; i < copyList.length; i++) {
-                        if (copyList[i] != null){
+                        if (copyList[i] != null) {
                             copyList[i].parentNode.removeChild(copyList[i]);
                         }
                     }
@@ -215,7 +216,6 @@
              * 更新上传列表
              */
             function updateList() {
-                document.getElementById('file-list').innerHTML = ''; // 先清空上传列表
                 dataArr.forEach((item, index) => {
                     /**
                      * 将文件列表存放在按钮下方
@@ -249,10 +249,18 @@
             不要去设置Content-Type请求头才可以发送成功，否则会报“Illegal invocation”的错误，    
             也就是非法调用，所以要加上“processData: false,contentType: false,”    
             * */
+            let upCount = 0;
             function send() {
+                oInput.setAttribute('disabled', 'disabled');
+                oSubmit.setAttribute('disabled', 'disabled');
+
                 let submitArr = [];
                 for (let i = 0; i < dataArr.length; i++) {
                     if (dataArr[i]) {
+                        let deleteNode = document.getElementById("index" + i);
+                        if (deleteNode) {
+                            document.getElementById('file-list').removeChild(deleteNode.parentNode);
+                        }
                         uploadFile(dataArr[i], i);
                     }
                 }
@@ -278,19 +286,21 @@
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
                         if (xml.status == 201) {  //监听HTTP状态码
-                            let deleteNode = document.getElementById("index"+i);
-                            if(deleteNode){
-                              document.getElementById('file-list').removeChild(deleteNode.parentNode);
-                              dataArr.splice(index, 1);
-                            }
+                            dataArr.splice(index, 1);
                             // 回填图片路径地址
                             let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
-                            let subName = fileData.name.substring(0,10) + " 外链";
+                            let subName = fileData.name.substring(0, 10) + " 外链";
                             let fileContent = `<li class="upload-list-item"><a id="fileUrl${i}" href="${fileUrl}" target="_blank">${subName}</a>
                 <label class="uplist" id="copy${i}" onclick="copyUrl(event)">点击复制</label></li>`;
                             document.getElementById('resultUrl').innerHTML += fileContent;
                         } else {
                             console.log(xml.status);
+                        }
+                        upCount++;
+                        if (upCount == dataArr.length) {
+                            upCount = 0;
+                            oInput.removeAttribute('disabled');
+                            oSubmit.removeAttribute('disabled');
                         }
                     }
                 }
@@ -315,27 +325,27 @@
         function copyUrl(event) {
             let index = parseInt(event.target.id.replace(/[^0-9]/ig, ""));
             let url = document.getElementById('fileUrl' + index).getAttribute("href");
-            
+
             let textarea = document.createElement("textarea");
             let currentFocus = document.activeElement;
             let toolBoxwrap = document.getElementById("toolBox");
             toolBoxwrap.appendChild(textarea);
             textarea.value = url;
             textarea.focus();
-            if(textarea.setSelectionRange){
-                textarea.setSelectionRange(0,textarea.value.length);
-            }else{
+            if (textarea.setSelectionRange) {
+                textarea.setSelectionRange(0, textarea.value.length);
+            } else {
                 textarea.select();
             }
-            try{
+            try {
                 var flag = document.execCommand("copy");
-            }catch(ex){
+            } catch (ex) {
                 var flag = false;
             }
 
             toolBoxwrap.removeChild(textarea);
             currentFocus.focus();
-            if(flag){
+            if (flag) {
                 alert("复制成功。\n如外链未生效，请稍候两分钟，CDN缓存生成即可。");
             }
 
