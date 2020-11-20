@@ -289,10 +289,6 @@
                             let fileContent = `<li class="upload-list-item"><a id="fileUrl${i}" href="${fileUrl}" target="_blank">${subName}</a>
                 <label class="uplist" id="copy${i}" onclick="copyUrl(event)">点击复制</label></li>`;
                             document.getElementById('resultUrl').innerHTML += fileContent;
-                            let up = document.getElementById("copy" + i);
-                            up.onclick = function (event) {
-                                copyUrl(i);
-                            }
                         } else {
                             console.log(xml.status);
                         }
