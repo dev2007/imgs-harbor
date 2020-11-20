@@ -269,6 +269,7 @@
             }
 
             function uploadFile(fileData, i) {
+                let dataSize = dataArr.length;
                 /**
                  * 以下是原生的xml 上传方式
                  * */
@@ -297,7 +298,7 @@
                             console.log(xml.status);
                         }
                         upCount++;
-                        if (upCount == dataArr.length) {
+                        if (upCount == dataSize) {
                             upCount = 0;
                             oInput.removeAttribute('disabled');
                             oSubmit.removeAttribute('disabled');
