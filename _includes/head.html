@@ -282,9 +282,10 @@
                             updateList();
                             // 回填图片路径地址
                             let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
-                            let fileContent = `<li class="upload-list-item"><a id="fileUrl${i}" href="${fileUrl}" target="_blank">${fileData.name}外链</a>
+                            let subName = fileData.name.substring(0,10) + "外链";
+                            let fileContent = `<li class="upload-list-item"><a id="fileUrl${i}" href="${fileUrl}" target="_blank">${subName}</a>
                 <label class="uplist" id="copy${i}">点击复制</label><div id="toolBox${i}" class="display:none"></div></li>`;
-                            document.getElementById('resultUrl').innerHTML = fileContent;
+                            document.getElementById('resultUrl').innerHTML += fileContent;
                             let upArr = document.getElementsByClassName('uplist');
                             let up = document.getElementById("copy" + i);
                             up.onclick = function (event) {
