@@ -278,17 +278,16 @@
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
                         if (xml.status == 201) {  //监听HTTP状态码
-                            let upList = document.getElementById('file-list').childNodes;
-                            for(let index = 0; index < upList.length;index++){
-                                if(upList[index].getAttribute("index") == i){
-                                    document.getElementById('file-list').removeChild(upList[index]);
-                                }
+                            let deleteNode = document.getElementById("index"+i);
+                            if(deleteNode){
+                              document.getElementById('file-list').removeChild(deleteNode.parentNode);
+                              dataArr.splice(index, 1);
                             }
                             // 回填图片路径地址
                             let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
                             let subName = fileData.name.substring(0,10) + " 外链";
                             let fileContent = `<li class="upload-list-item"><a id="fileUrl${i}" href="${fileUrl}" target="_blank">${subName}</a>
-                <label class="uplist" id="copy${i}">点击复制</label><div id="toolBox${i}" class="display:none"></div></li>`;
+                <label class="uplist" id="copy${i}" onclick="copyUrl(event)">点击复制</label></li>`;
                             document.getElementById('resultUrl').innerHTML += fileContent;
                             let up = document.getElementById("copy" + i);
                             up.onclick = function (event) {
@@ -317,12 +316,13 @@
                 el.classList.add('active');
             }
         };
-        function copyUrl(i) {
-            let url = document.getElementById('fileUrl' + i).getAttribute("href");
+        function copyUrl(event) {
+            let index = parseInt(event.target.id.replace(/[^0-9]/ig, ""));
+            let url = document.getElementById('fileUrl' + index).getAttribute("href");
             
             let textarea = document.createElement("textarea");
             let currentFocus = document.activeElement;
-            let toolBoxwrap = document.getElementById("toolBox"+i);
+            let toolBoxwrap = document.getElementById("toolBox");
             toolBoxwrap.appendChild(textarea);
             textarea.value = url;
             textarea.focus();
