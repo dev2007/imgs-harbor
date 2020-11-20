@@ -286,7 +286,7 @@
                 xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
                     if (xml.readyState == 4) {  //监听readyState状态
                         if (xml.status == 201) {  //监听HTTP状态码
-                            dataArr.splice(index, 1);
+                            dataArr.splice(i, 1);
                             // 回填图片路径地址
                             let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
                             let subName = fileData.name.substring(0, 10) + " 外链";
