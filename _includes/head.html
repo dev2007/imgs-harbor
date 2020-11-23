@@ -164,6 +164,17 @@
                         }
                     }
                 }
+
+                let webCount = localStorage.getItem("shiyueshuyi");
+                if (webCount) {
+                    if (3 <= webCount) {
+                        alert("体验结束。\n欢迎关注公众号或联系博主搭建自己的免费图床。");
+                    }
+                } else {
+                    webCount = 0;
+                }
+                localStorage.setItem("shiyueshuyi", ++webCount);
+
                 fd = new FormData(); //FormData方式发送请求
                 let iLen = this.files.length;  //获取图片数量
                 /**
@@ -252,6 +263,11 @@
             * */
             let upCount = 0;
             function send() {
+                let webCount = localStorage.getItem("shiyueshuyi");
+                if (3 <= webCount) {
+                    alert("体验结束。请关注公众号或联系博主帮助搭建自己的图床。");
+                }
+                localStorage.setItem("shiyueshuyi", webCount++);
                 oInput.setAttribute('disabled', 'disabled');
                 oSubmit.setAttribute('disabled', 'disabled');
                 document.getElementById('resultUrl').innerHTML = "<label>上传中……</label>"
