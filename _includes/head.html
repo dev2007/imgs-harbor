@@ -1,15 +1,370 @@
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-<link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
-{%- seo -%}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="shortcut icon" href="/assets/images/favicon/favicon.ico" type="image/x-icon">
+    {%- seo -%}
 
-{%- feed_meta -%}
+    {%- feed_meta -%}
 
-{%- if jekyll.environment == 'production' and site.google_analytics -%}
-  {%- include google-analytics.html -%}
-{%- endif -%}
+    {%- if jekyll.environment == 'production' and site.google_analytics -%}
+    {%- include google-analytics.html -%}
+    {%- endif -%}
 
-<link rel="stylesheet" href="{{ 'assets/css/main.css' | absolute_url }}">
-<noscript><link rel="stylesheet" href="{{ 'assets/css/noscript.css' | relative_url }}" /></noscript>
+    <link rel="stylesheet" href="{{ 'assets/css/main.css' | absolute_url }}">
+    <noscript>
+        <link rel="stylesheet" href="{{ 'assets/css/noscript.css' | relative_url }}" /></noscript>
+    <style type="text/css">
+        .uploadpanel {
+            padding: 4em 4em 2em 4em;
+            transform: translateY(100vh);
+            transition: transform 0.5s ease;
+            -webkit-overflow-scrolling: touch;
+            background: rgba(36, 38, 41, 0.975);
+            bottom: 4em;
+            left: 0;
+            max-height: calc(80vh - 4em);
+            overflow-y: auto;
+            position: fixed;
+            width: 100%;
+            z-index: 10001;
+        }
+
+        .uploadpanel.active {
+            transform: translateY(1px);
+        }
+
+        .uploadpanel>.inner.split {
+            display: flex;
+        }
+
+        .uploadpanel>.inner {
+            margin: 0 auto;
+            max-width: 100%;
+            width: 75em;
+        }
+
+        .uploadpanel>.inner.split>div {
+            width: 50%;
+        }
+
+        .btn {
+            background: #34a58e;
+            border: 1px solid transparent;
+            border-radius: 1px;
+            padding: 12px 30px;
+            overflow: hidden;
+            color: #fff;
+            text-decoration: none;
+            text-indent: 0;
+            line-height: 1.5;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #34a58e;
+        }
+
+        .container {
+            color: white;
+        }
+
+        .container .file {
+            position: relative;
+            display: inline-block;
+        }
+
+        .container .file input {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        .upload-list-item:first-child {
+            margin-top: 10px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0px;
+        }
+
+        .upload-list-item {
+            display: flex;
+            transition: all .5s cubic-bezier(.55, 0, .1, 1);
+            font-size: 14px;
+            line-height: 1.8;
+            margin-top: 5px;
+            position: relative;
+            box-sizing: border-box;
+            border-radius: 4px;
+            width: 80%;
+            list-style: none;
+        }
+
+        .delete {
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+            right: 5px;
+        }
+
+        .uplist {
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+            right: 5px;
+        }
+
+        .upload-item-name {
+            display: block;
+            margin-right: 40px;
+            overflow: hidden;
+            padding-left: 4px;
+            text-overflow: ellipsis;
+            transition: color .3s;
+            white-space: nowrap;
+        }
+
+        #resultUrl {
+            color: #fff;
+            font-size: 20px;
+            margin: 10px 20px;
+        }
+    </style>
+    <script type="text/javascript">
+        window.onload = function () {
+            //document.getElementById()返回的是DOM对象，而$()返回的是jQuery对象;
+            let oSubmit = document.getElementById("submit");
+            let oInput = document.getElementById("file_input");
+            let dataArr = []; // 储存所选图片的结果(文件名和base64数据)  
+            let fd;
+            let result;
+            let index = 0;
+
+            //判断是否支持FileReader
+            if (typeof FileReader === 'undefined') {
+                alert("抱歉，你的浏览器不支持 FileReader");
+                oInput.setAttribute('disabled', 'disabled'); //添加属性，禁用input
+            } else {
+                //添加监听事件  
+                oInput.addEventListener('change', readFile, false);   //默认值是false，冒泡传递;当值为true，捕获传递
+            }
+
+            function readFile() {
+                document.getElementById('resultUrl').innerHTML = '';
+                index = 0;
+                let copyList = document.getElementsByClassName("upload-list-item");
+                if (copyList) {
+                    for (i = 0; i < copyList.length; i++) {
+                        if (copyList[i] != null) {
+                            copyList[i].parentNode.removeChild(copyList[i]);
+                        }
+                    }
+                }
+                fd = new FormData(); //FormData方式发送请求
+                let iLen = this.files.length;  //获取图片数量
+                /**
+                 * 以下是支持多张图片同时上传的模式
+                 * */
+                for (let i = 0; i < iLen; i++) {
+                    if (!oInput['value'].match(/.jpg|.gif|.png|.jpeg|.bmp/i)) {　　//判断上传文件格式
+                        return alert("上传的图片格式不正确，请重新选择");
+                    }
+                    let reader = new FileReader();  //创建FileReader对象
+                    reader.index = i;
+                    fd.append(i, this.files[i]);  //可以通过fd.get(i)获取FormData()对应的值;
+                    reader.readAsBinaryString(this.files[i]);  //转成base64，并存在reader.result里   
+                    reader.fileName = this.files[i].name;
+                    reader.onload = function (e) {
+                        //设置图片信息对象
+                        // 方便后面submit的时候，将数据传给后台
+                        let imgMsg = {
+                            name: this.fileName,//获取文件名    
+                            base64: window.btoa(this.result)   //reader.readAsDataURL方法执行完后，base64数据储存在reader.result里    
+                        }
+                        dataArr.push(imgMsg);   //将图片信息对象存到数据数组中
+
+                        /**
+                         * 将文件列表存放在按钮下方
+                         * */
+                        let imgList = '<a class="upload-item-name">' + imgMsg.name + '</a>' +
+                            '<label id="index' + index + '" class="delete">移除</label>';
+                        let li = document.createElement('li');
+                        li.innerHTML = imgList;
+                        li['className'] = 'upload-list-item';
+                        li['index'] = index;
+                        document.getElementById('file-list').appendChild(li); //插入文件列表
+
+
+                        let deleArr = document.getElementsByClassName('delete');
+                        for (let i = 0; i < deleArr.length; i++) {
+                            deleArr[i].onclick = function (event) {
+                                let index = parseInt(event.target.id.replace(/[^0-9]/ig, ""));
+                                dataArr.splice(index, 1); // 删除dataArr对应的数据
+                                updateList();
+                            }
+                        }
+
+                        index++;
+                    }
+                }
+            }
+
+            /**
+             * 更新上传列表
+             */
+            function updateList() {
+                dataArr.forEach((item, index) => {
+                    /**
+                     * 将文件列表存放在按钮下方
+                     * */
+                    let imgList = '<a class="upload-item-name">' + item.name + '</a>' +
+                        '<label id="delete" class="delete">移除</label>';
+                    let li = document.createElement('li');
+                    li.innerHTML = imgList;
+                    li['className'] = 'upload-list-item';
+                    li['index'] = index;
+                    document.getElementById('file-list').appendChild(li); //插入文件列表
+
+
+                    /**
+                     * 绑定移除事件
+                     * */
+                    let deleArr = document.getElementsByClassName('delete');
+                    for (let i = 0; i < deleArr.length; i++) {
+                        deleArr[i].onclick = function (event) {
+                            let index = parseInt(event.target.id.replace(/[^0-9]/ig, ""));
+                            dataArr.splice(index, 1); // 删除dataArr对应的数据
+                            updateList();
+                        }
+                    }
+                });
+            }
+            /*
+            上传文件，但时候这里切换成自己的ajax请求方式，以及请求头文件
+
+            用ajax发送fd参数时要告诉jQuery不要去处理发送的数据，    
+            不要去设置Content-Type请求头才可以发送成功，否则会报“Illegal invocation”的错误，    
+            也就是非法调用，所以要加上“processData: false,contentType: false,”    
+            * */
+            let upCount = 0;
+            function send() {                
+                let webCount = localStorage.getItem("shiyueshuyi");
+                if (webCount) {
+                    if (3 <= webCount) {
+                        alert("体验结束。\n欢迎关注公众号或联系博主搭建自己的免费图床。");
+                        return;
+                    }
+                } else {
+                    webCount = 0;
+                }
+                localStorage.setItem("shiyueshuyi", ++webCount);
+
+                oInput.setAttribute('disabled', 'disabled');
+                oSubmit.setAttribute('disabled', 'disabled');
+                document.getElementById('resultUrl').innerHTML = "<label>上传中……</label>"
+                let submitArr = [];
+                for (let i = 0; i < dataArr.length; i++) {
+                    if (dataArr[i]) {
+                        let deleteNode = document.getElementById("index" + i);
+                        if (deleteNode) {
+                            document.getElementById('file-list').removeChild(deleteNode.parentNode);
+                        }
+                        uploadFile(dataArr[i], i);
+                    }
+                }
+
+
+            }
+
+            function uploadFile(fileData, i) {
+                let dataSize = dataArr.length;
+                /**
+                 * 以下是原生的xml 上传方式
+                 * */
+                //首先new一个XMLRequest对象
+                let xml = new XMLHttpRequest();
+                //上传路径以及提交方式,true表示以异步方式发送数据
+                let path = "content/" + Date.parse(new Date()) / 1000 + "." + fileData.name;
+                let api = "https://api.github.com/repos/dev2007/imgs-harbor/contents/" + path;
+                xml.open('put', api, true); // true表示异步执行，不等待后台返回；
+                xml.setRequestHeader("Accept", "application/vnd.github.v3+json");
+                let token = window.atob("MmU4MDVmNTY4MmEzZmY1MGIzYWZhNmVkMjQ4YTc4NmI4YjgzNmFlMg==");
+                xml.setRequestHeader("Authorization", "token " + token);
+                //发送数据
+                let data = { "message": "upload file", "content": fileData.base64 };
+                xml.onreadystatechange = function () {  //绑定响应状态事件监听函数
+                    if (xml.readyState == 4) {  //监听readyState状态
+                        if (xml.status == 201) {  //监听HTTP状态码
+                            if (upCount == 0) {
+                                document.getElementById('resultUrl').innerHTML = "";
+                            }
+                            dataArr.splice(i, 1);
+                            // 回填图片路径地址
+                            let fileUrl = 'https://harbor.shiyueshuyi.xyz/' + path;
+                            let subName = fileData.name.substring(0, 10) + " 外链";
+                            let fileContent = `<li class="upload-list-item"><a id="fileUrl${i}" href="${fileUrl}" target="_blank">${subName}</a>
+                <label class="uplist" id="copy${i}" onclick="copyUrl(event)">点击复制</label></li>`;
+                            document.getElementById('resultUrl').innerHTML += fileContent;
+                        } else {
+                            console.log(xml.status);
+                        }
+                        upCount++;
+                        if (upCount == dataSize) {
+                            upCount = 0;
+                            oInput.removeAttribute('disabled');
+                            oSubmit.removeAttribute('disabled');
+                        }
+                    }
+                }
+                xml.send(JSON.stringify(data));
+            }
+
+            oSubmit.onclick = function () {
+                if (!dataArr.length) {
+                    return alert('请先选择文件');
+                }
+                send();
+            }
+        };
+        function showPanel() {
+            let el = document.getElementById('uploadfooter');
+            if (el.classList.contains("active")) {
+                el.classList.remove("active");
+            } else {
+                el.classList.add('active');
+            }
+        };
+        function copyUrl(event) {
+            let index = parseInt(event.target.id.replace(/[^0-9]/ig, ""));
+            let url = document.getElementById('fileUrl' + index).getAttribute("href");
+
+            let textarea = document.createElement("textarea");
+            let currentFocus = document.activeElement;
+            let toolBoxwrap = document.getElementById("toolBox");
+            toolBoxwrap.appendChild(textarea);
+            textarea.value = url;
+            textarea.focus();
+            if (textarea.setSelectionRange) {
+                textarea.setSelectionRange(0, textarea.value.length);
+            } else {
+                textarea.select();
+            }
+            try {
+                var flag = document.execCommand("copy");
+            } catch (ex) {
+                var flag = false;
+            }
+
+            toolBoxwrap.removeChild(textarea);
+            currentFocus.focus();
+            if (flag) {
+                alert("复制成功。\n如外链未生效，请稍候两分钟，CDN缓存生成即可。");
+            }
+
+        };
+    </script>
 </head>
