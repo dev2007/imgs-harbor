@@ -1,3 +1,0 @@
-下次在网上被乱泄露自己的GitHub Access Token 
-拿到Token以后我都有控制你账户的权限，注意一点啊
-这个Access Token我帮你毁掉了
